@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Page Title -->
+    <title>Test</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/images/logo/favicon.png" type="image/x-icon">
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="assets/css/animate-3.7.0.css">
+    <link rel="stylesheet" href="assets/css/font-awesome-4.7.0.min.css">
+    <link rel="stylesheet" href="assets/fonts/flat-icon/flaticon.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-4.1.3.min.css">
+    <link rel="stylesheet" href="assets/css/owl-carousel.min.css">
+    <link rel="stylesheet" href="assets/css/nice-select.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Preloader Starts -->
+    <div class="preloader">
+        <div class="spinner"></div>
+    </div>
+    <!-- Preloader End -->
+
+    <!-- Header Area Starts -->
+    <header class="header-area single-page">
+        <div class="header-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="logo-area">
+                        <!--    <a href="/index"><img src="assets/images/logo-light.png" alt="logo"></a>-->
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <div class="custom-navbar">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>  
+                        <div class="main-menu main-menu-light">
+                            <ul>
+                                <li class="active"><a href="/index">home</a></li>
+                                <li><a href="/introduction">introduction</a></li>
+                                <li><a href="/test">test</a></li>
+
+                                {% if current_user.is_anonymous %}
+                                <li class="menu-btn">
+                                    <a href="/login" class="login">log in</a>
+                                    <a href="/register" class="template-btn">sign up</a>
+                                </li>
+                                {% else %}
+                                <li class="menu-btn">
+                            <!--        <a href="/profile" class="template-btn">profile</a>-->
+                                    <a href="/logout" class="logout">log out</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-title text-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <h2>Hate Speech Result</h2>
+             <!--           <p>{{res}}</p> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </header>
+    <!-- Header Area End -->
+
+    <!-- Job Single Content Starts -->
+    <section class="job-single-content section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="main-content">
+                        <div class="single-content1">
+                            <div class="single-job mb-4 d-lg-flex justify-content-between">
+                                <div class="job-text">
+                                    <h3>Dynamic Visualization Results</h3>
+                                </div></div></div></div></div>
+                <div class="col-md-6 offset-md-1.8">
+                    <iframe id="wordCloud"
+                        title="wordCloud"
+                        width="1000"
+                        height="1200"
+                            frameBorder="0"
+                            scrolling="no"
+                        src="http://127.0.0.1:5000/d3?keyword=">
+                    </iframe>
+                        <script>
+                        var keyword = {{ keyword|tojson }};
+                        var prefix = document.getElementById("wordCloud").src;
+                        document.getElementById("wordCloud").src = prefix + keyword['keyword'];
+                        </script>
+                </div>
+
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="main-content">
+                        <div class="single-content1">
+                            <div class="col-md-6 offset-md-5">
+                            <div class="job-btn align-self-center">
+                                <br>
+                                <br>
+                                <br>
+                                <!--<a href="/therapy" onclick="location.href=this.href+'?state=' + vote[0];" class="third-btn job-btn1">Video Therapy</a>-->
+                                <a href="#" onclick="location.href='/stats?keyword=' + keyword['keyword'];" class="third-btn job-btn1">Statistics for now</a>
+                                <!--<a href="#" class="third-btn">what to do</a>-->
+                            </div>
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Javascript -->
+    <script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
+	<script src="assets/js/vendor/bootstrap-4.1.3.min.js"></script>
+    <script src="assets/js/vendor/wow.min.js"></script>
+    <script src="assets/js/vendor/owl-carousel.min.js"></script>
+    <script src="assets/js/vendor/jquery.nice-select.min.js"></script>
+    <script src="assets/js/vendor/ion.rangeSlider.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

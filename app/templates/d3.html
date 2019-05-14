@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html lang="en">
+<head>
+  <div id="graph"></div>
+<br>
+  <br>
+<sss>
+
+  <script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js"></script>
+  <script src="assets/js/vendor/loadash.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <script>
+//Simple animated example of d3-cloud - https://github.com/jasondavies/d3-cloud
+//Based on https://github.com/jasondavies/d3-cloud/blob/master/examples/simple.html
+// Encapsulate the word cloud functionality
+function wordCloud(selector) {
+    var fill = d3.scale.category20();
+    //Construct the word cloud's SVG element
+    var svg = d3.select(selector).append("svg")
+        .attr("width", 1000)
+        .attr("height", 700)
+        .append("g")
+        .attr("transform", "translate(550,350)");
+    //Draw the word cloud
+    function draw(words) {
+        var cloud = svg.selectAll("g text")
+                        .data(words, function(d) { return d.text; })
+        //Entering words
+        cloud.enter()
+            .append("text")
+            .style("font-family", "Impact")
+            .style("fill", function(d, i) { return fill(i); })
+            .attr("text-anchor", "middle")
+            .attr('font-size', 1)
+            .text(function(d) { return d.text; });
+        //Entering and existing words
+        cloud
+            .transition()
+                .duration(600)
+                .style("font-size", function(d) { return d.size + "px"; })
+                .attr("transform", function(d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .style("fill-opacity", 1);
+        //Exiting words
+        cloud.exit()
+            .transition()
+                .duration(200)
+                .style('fill-opacity', 1e-6)
+                .attr('font-size', 1)
+                .remove();
+    }
+    //Use the module pattern to encapsulate the visualisation code. We'll
+    // expose only the parts that need to be public.
+    return {
+        //Recompute the word cloud for a new set of words. This method will
+        // asycnhronously call draw when the layout has been computed.
+        //The outside world will need to call this function, so make it part
+        // of the wordCloud return value.
+        update: function(words) {
+            d3.layout.cloud().size([700, 700])
+                .words(words)
+                //.padding(5)
+                //.rotate(function() { return ~~(Math.random() * 2) * 90; })
+                .font("Impact")
+                .fontSize(function(d) { return d.size; })
+                .on("end", draw)
+                .start();
+        }
+    }
+}
+//Some sample data - http://en.wikiquote.org/wiki/Opening_lines
+var res = {{ res|tojson }};
+var words = res["words"];
+var keyword = res["keyword"];
+//Prepare one of the sample sentences by removing punctuation,
+// creating an array of words and computing a random size attribute.
+
+//Create a new instance of the word cloud visualisation.
+var myWordCloud = wordCloud('sss');
+//Start cycling through the demo data
+myWordCloud.update(words);
+
+var trace = {
+    x: [],
+    y: [],
+    type: 'scatter',
+    textposition: 'top'
+}
+
+var trace_d = [trace];
+var layout = {
+  title: 'Keyword count :' + keyword,
+  xaxis: {
+    title: 'refreshing timestamp'
+  },
+  yaxis: {
+    title: 'counts'
+  }
+};
+// draw the original graph
+Plotly.plot('graph', trace_d, layout);
+var refresh_cnt = 0;
+InterValObj = window.setInterval(function(){
+        if (refresh_cnt == 30) {
+           window.clearInterval(InterValObj);
+           }
+        else {
+        refresh_cnt = refresh_cnt + 1;
+        $.ajax({
+        type:"POST",
+        url:"/refreshData",
+        data:{keyword:keyword},
+        async:true,
+        dataType:"json",
+        success:function(res){
+            first = res.shift();
+            var update = {
+              x : [[first['text']]],
+              y : [[first['size']]],
+            };
+            words = res;
+            Plotly.extendTraces('graph', update, [0]);
+        },
+        //error: function() {
+        //    alert("error.");
+        //}
+        });
+    myWordCloud.update(words);
+    }
+},5000);
+
+</script>
+
+</sss>
+</head>
+
+</html>
